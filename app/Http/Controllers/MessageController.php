@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Events\PrivateMessageSent;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -41,8 +42,13 @@ class MessageController extends Controller
             'receiver_id' => $request->receiver_id,
             'sender_id' => $sender_id,
         ]);
-        broadcast(new MessageSent($message->load('sender')))->toOthers();
-        // event(new MessageSent($message));
+        if( $message->receiver_id ) {
+            broadcast(new PrivateMessageSent($message->load('sender')))->toOthers();
+
+        }else {
+
+            broadcast(new MessageSent($message->load('sender')))->toOthers();
+        }
 
         return ['status' => 200];
     }

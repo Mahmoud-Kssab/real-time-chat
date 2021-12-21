@@ -118,7 +118,11 @@ import message from './MessageComponent.vue'
                 axios.get('/messages/'+$id)
                 .then( res =>
                 {
-                    this.messages = res.data
+                    this.messages = res.data;
+                    window.Echo.private('private-chat.'+$id)
+                    .listen('PrivateMessageSent',(e) => {
+                        console.log('private message');
+                    })
                 })
                 .then( err => console.log( err ) )
             },
@@ -128,11 +132,11 @@ import message from './MessageComponent.vue'
                 .then( res =>
                 {
                     this.messages = res.data
-                    window.Echo.join('chat')
+                    window.Echo.channel('chat')
                     .listen('MessageSent',(event) => {
                         console.log(event);
                         this.messages.push(event.message);
-                })
+                    })
                 })
                 .then( err => console.log( err ) )
             },

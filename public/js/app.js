@@ -5354,6 +5354,9 @@ __webpack_require__.r(__webpack_exports__);
       this.receiver_id = $id;
       axios.get('/messages/' + $id).then(function (res) {
         _this2.messages = res.data;
+        window.Echo["private"]('private-chat.' + $id).listen('PrivateMessageSent', function (e) {
+          console.log('private message');
+        });
       }).then(function (err) {
         return console.log(err);
       });
@@ -5363,7 +5366,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/public_messages').then(function (res) {
         _this3.messages = res.data;
-        window.Echo.join('chat').listen('MessageSent', function (event) {
+        window.Echo.channel('chat').listen('MessageSent', function (event) {
           console.log(event);
 
           _this3.messages.push(event.message);
