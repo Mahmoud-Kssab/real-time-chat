@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-<h3 class=" text-center">Messaging</h3>
-<div class="messaging">
+    <h3 class=" text-center">Messaging</h3>
+    <div class="messaging">
       <div class="inbox_msg">
         <div class="inbox_people">
           <div class="headind_srch">
@@ -73,12 +73,9 @@
 </template>
 
 <script>
-import message from './MessageComponent.vue'
-
     export default {
         name: "ChatsComponent",
         data(){
-
             return {
                 users: [],
                 messages: [],
@@ -86,42 +83,28 @@ import message from './MessageComponent.vue'
                 receiver_id: null
             }
         },
-        components :{
-            message
-        },
         mounted() {
              this.getUsers();
              this.getPublicMessages();
-
-
         },
-        created() {
-
-
-        },
-
         methods: {
-
             getUsers(){
-
                 axios.get('/users')
                 .then( res =>
                 {
-                    console.log(res.data);
                     this.users = res.data
                 })
                 .then( err => console.log( err ) )
             },getMessages($id){
-
                 this.receiver_id = $id;
-
-                axios.get('/messages/'+$id)
+                axios.get('/messages/'+ $id)
                 .then( res =>
                 {
                     this.messages = res.data;
                     window.Echo.private('private-chat.'+$id)
                     .listen('PrivateMessageSent',(e) => {
                         console.log('private message');
+                        this.messages.push(e.message);
                     })
                 })
                 .then( err => console.log( err ) )
@@ -134,7 +117,6 @@ import message from './MessageComponent.vue'
                     this.messages = res.data
                     window.Echo.channel('chat')
                     .listen('MessageSent',(event) => {
-                        console.log(event);
                         this.messages.push(event.message);
                     })
                 })

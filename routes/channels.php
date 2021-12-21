@@ -23,7 +23,9 @@ Broadcast::channel('chat', function ($user) {
 });
 
 Broadcast::channel('private-chat.{id}', function ($user, $id) {
-    return (int) $user->id == (int) $id;
+
+    // dd($user->id  . '  ' . $id );
+    return (int) $user->id != (int) $id;
 });
 
 
